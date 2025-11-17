@@ -1,38 +1,50 @@
 import { Upload, FileText } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
-import { useState } from 'react';
-import { uploadPDF } from './services/uploadHandler.ts'; // Import the upload logic
+import React from 'react';
+import { uploadPDF } from './services/uploadHandler'; // upload logic
 
 interface WireframeHomeProps {
   onNext: () => void;
 }
 
 export function WireframeHome({ onNext }: WireframeHomeProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = React.useState<File | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = event.target.files?.[0];
-    if (uploadedFile && uploadedFile.type === 'application/pdf') {
-      setFile(uploadedFile);
-      console.log('PDF selected:', uploadedFile.name);
-    } else {
-      alert('Please select a valid PDF file.');
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0]);
+    }
+    // Reset the file input value to allow re-uploading the same file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
   const handleSubmit = async () => {
     if (file) {
       try {
-        await uploadPDF(file); // Call the upload logic
-        alert('File uploaded successfully!');
-        onNext();
+        const response = await uploadPDF(file);
+        console.log('Upload response in handleSubmit:', response);
+        alert(response.message || 'Upload ok'); // fallback
+        setFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       } catch (error) {
         console.error('Error uploading file:', error);
-        alert('Failed to upload the file. Please try again.');
+        alert('Failed to upload the file.');
       }
     } else {
       alert('Please select a PDF file before submitting.');
+    }
+  };
+
+  const handleCancelUpload = () => {
+    setFile(null); // Clear the selected file
+    if(fileInputRef.current) {
+      fileInputRef.current.value = ''; //reset the file input
     }
   };
 
@@ -85,10 +97,24 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
         </label>
       </div>
 
+      {/* File Card */}
+      {file && (
+          <div className="mb-6 p-3 border-2 border-gray-300 rounded bg-white flex items-center justify-between">
+            <div className="text-gray-900">{file.name}</div>
+            <button
+              onClick={handleCancelUpload}
+              className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center bg-white hover:border-gray-500 transition-colors"
+              >
+              X
+            </button>
+          </div>
+        )}
+      
       {/* Action Button */}
         <Button
           onClick={handleSubmit}
           className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900"
+          disabled={!file} // Disable if no file is selected
         >
           Submit
         </Button>
