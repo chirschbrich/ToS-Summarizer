@@ -13,31 +13,30 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
-    }
-    // Reset the file input value to allow re-uploading the same file
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    const selected = event.target.files?.[0] ?? null;
+    console.log('handleFileChange selected:', selected);
+    setFile(selected);
   };
 
   const handleSubmit = async () => {
-    if (file) {
-      try {
-        const response = await uploadPDF(file);
-        console.log('Upload response in handleSubmit:', response);
-        alert(response.message || 'Upload ok'); // fallback
-        setFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        alert('Failed to upload the file.');
-      }
-    } else {
+    if (!file) {
       alert('Please select a PDF file before submitting.');
+      return;
+    }
+
+    try {
+      const response = await uploadPDF(file);
+      console.log('Upload response in handleSubmit:', response);
+      alert(response.message || 'Upload ok');
+      
+      // clear after SUCCESS
+      setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Failed to upload the file.');
     }
   };
 
@@ -88,6 +87,7 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
           {/* Hidden input inside label */}
           <input
             id="pdf-upload"
+            ref={fileInputRef}
             type="file"
             accept="application/pdf"
             onChange={handleFileChange}
@@ -113,12 +113,12 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
       {/* Action Button */}
         <Button
           onClick={handleSubmit}
-          className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900"
+          className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           disabled={!file} // Disable if no file is selected
         >
           Submit
         </Button>
-
+        
         {/* Footer Info */}
         <div className="mt-4 p-3 border-2 border-gray-300 rounded bg-white">
           <div className="text-xs text-gray-600">
