@@ -82,16 +82,10 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
           <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
             1
           </div>
-          <div>
-            <span className="text-gray-900">User Story:</span> Click button in browser extension to enable summarizer
-          </div>
         </div>
         <div className="flex items-start gap-2">
           <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
             2
-          </div>
-          <div>
-            <span className="text-gray-900">Feature:</span> Two input methods - page capture or file upload
           </div>
         </div>
       </div>
