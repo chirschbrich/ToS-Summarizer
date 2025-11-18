@@ -5,14 +5,14 @@ import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { Button } from './ui/button';
-import { Progress } from './ui/progress';
 
 interface WireframeSummaryProps {
   summary: string;
+  keyPoints: { title: string; detail: string; }[];
   onBack: () => void;
 }
 
-export function WireframeSummary({ summary, onBack }: WireframeSummaryProps) {
+export function WireframeSummary({ summary, keyPoints, onBack }: WireframeSummaryProps) {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Browser Extension Summary Screen */}
@@ -21,32 +21,9 @@ export function WireframeSummary({ summary, onBack }: WireframeSummaryProps) {
         <div className="p-6 border-b-2 border-gray-400 bg-white">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <button className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center hover:bg-gray-100">
-                <ArrowLeft className="w-4 h-4 text-gray-600" />
-              </button>
               <div>
                 <div className="text-gray-900">ToS Summary Complete</div>
-                <div className="text-sm text-gray-500">example-service.com</div>
               </div>
-            </div>
-            <div className="flex gap-2">
-              <button className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center hover:bg-gray-100">
-                <Download className="w-4 h-4 text-gray-600" />
-              </button>
-              <button className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center hover:bg-gray-100">
-                <Share2 className="w-4 h-4 text-gray-600" />
-              </button>
-            </div>
-          </div>
-
-          {/* Risk Score */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-700">Privacy Risk Score</span>
-                <span className="text-gray-900">Medium (6/10)</span>
-              </div>
-              <Progress value={60} className="h-2" />
             </div>
           </div>
         </div>
@@ -61,7 +38,7 @@ export function WireframeSummary({ summary, onBack }: WireframeSummaryProps) {
               <TabsTrigger value="data-usage" className="border-r-2 border-gray-400">
                 Data Usage
               </TabsTrigger>
-              <TabsTrigger value="highlights">
+              <TabsTrigger value="highlights" className="border-r-2 border-gray-400">
                 Key Clauses
               </TabsTrigger>
             </TabsList>
@@ -80,21 +57,31 @@ export function WireframeSummary({ summary, onBack }: WireframeSummaryProps) {
                 </div>
               </Card>
 
+              {/* Dynamic Key Points */}
               <Card className="border-2 border-gray-300 p-4 bg-white">
                 <h3 className="text-gray-900 mb-3">Key Points</h3>
                 <div className="space-y-3">
-                  {['Account Terms', 'Service Usage', 'Liability', 'Termination'].map((item, i) => (
+                  {(keyPoints.length ? keyPoints : []).map((kp, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="w-6 h-6 border-2 border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-gray-100">
                         {i + 1}
                       </div>
                       <div className="flex-1">
-                        <div className="text-gray-900 mb-1">{item}</div>
-                        <div className="h-2 bg-gray-200 rounded w-full"></div>
-                        <div className="h-2 bg-gray-200 rounded w-3/4 mt-1"></div>
+                        <div className="text-gray-900 mb-1">
+                          {kp.title || `Key Point ${i + 1}`}
+                        </div>
+                        <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                          {kp.detail}
+                        </div>
                       </div>
                     </div>
                   ))}
+
+                  {!keyPoints.length && (
+                    <div className="text-sm text-gray-500">
+                      No key points were extracted from this document.
+                    </div>
+                  )}
                 </div>
               </Card>
             </TabsContent>
@@ -287,34 +274,6 @@ export function WireframeSummary({ summary, onBack }: WireframeSummaryProps) {
             <Button className="flex-1 bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900">
               Save Summary
             </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Annotations */}
-      <div className="mt-8 space-y-3 text-sm text-gray-600">
-        <div className="flex items-start gap-2">
-          <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            5
-          </div>
-          <div>
-            <span className="text-gray-900">User Story:</span> AI highlights important clauses about private data
-          </div>
-        </div>
-        <div className="flex items-start gap-2">
-          <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            6
-          </div>
-          <div>
-            <span className="text-gray-900">User Story:</span> Clear section showing how user data will be used
-          </div>
-        </div>
-        <div className="flex items-start gap-2">
-          <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            7
-          </div>
-          <div>
-            <span className="text-gray-900">User Story:</span> Objective summary with concrete answers to minimize bias
           </div>
         </div>
       </div>
