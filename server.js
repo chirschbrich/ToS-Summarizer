@@ -1,9 +1,16 @@
+// JavaScript
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
+
+const apiKey = process.env.OPENAI_API_KEY;
+if (!apiKey) {
+  console.error('Missing OPENAI_API_KEY');
+  process.exit(1);
+}
 
 const { summarizePdfBuffer } = require('./aiTools.js');
 
@@ -24,12 +31,14 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     await fs.promises.writeFile(destPath, req.file.buffer);
     console.log('Copied file to:', destPath);
 
-    // summarize PDF via aiTools
-    const summary = await summarizePdfBuffer(req.file.buffer);
+    const { summary, keyPoints } = await summarizePdfBuffer(req.file.buffer);
+    console.log('Summary length:', summary?.length);
+    console.log('Key points count:', keyPoints?.length);
 
     return res.json({
       message: 'File uploaded and summarized successfully',
       summary,
+      keyPoints,
     });
   } catch (err) {
     console.error('Upload error:', err);
@@ -40,9 +49,3 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 app.listen(3001, () => {
   console.log('Upload server on http://localhost:3001');
 });
-
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  console.error('Missing OPENAI_API_KEY');
-  process.exit(1);
-}
