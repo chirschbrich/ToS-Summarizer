@@ -1,12 +1,43 @@
 import { Shield, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { useState } from "react";
 
 interface WireframeAuthProps {
   onNext: () => void;
 }
 
 export function WireframeAuth({ onNext }: WireframeAuthProps) {
+  // States
+  const [digits, setDigits] = useState(Array(6).fill(""));
+  const [error, setError] = useState("");
+
+  //  update handler
+  const updateDigit = (index: number, value: string) => {
+    if (!/^\d?$/.test(value)) return; // allow only single digits
+
+    const newDigits = [...digits];
+    newDigits[index] = value;
+    setDigits(newDigits);
+
+    setError(""); // clear error when typing
+  };
+
+  // verification handler
+  const handleVerify = () => {
+    const code = digits.join("");
+    const correctCode = "123456";
+
+    if (code === correctCode) {
+      onNext();
+    } else {
+      setError("Incorrect code. Please try again.");
+    }
+  };
+
+
+
+
   return (
     <div className="max-w-md mx-auto">
       {/* Browser Extension Auth Screen */}
@@ -43,15 +74,24 @@ export function WireframeAuth({ onNext }: WireframeAuthProps) {
             
             {/* OTP Input Mockup */}
             <div className="flex gap-2 justify-center mb-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {digits.map((digit, i) => (
                 <Input
                   key={i}
-                  className="w-12 h-12 text-center border-2 border-gray-400 text-gray-900"
+                  value={digit}
+                  onChange={(e) => updateDigit(i, e.target.value)}
                   maxLength={1}
+                  className="w-12 h-12 text-center border-2 border-gray-400 text-gray-900"
                   placeholder="0"
                 />
               ))}
             </div>
+
+            {error && (
+              <div className="text-center text-red-600 text-sm mb-2">
+                {error}
+              </div>
+            )}
+
 
             <div className="text-xs text-gray-500 text-center">
               Code expires in 5:00
@@ -71,7 +111,7 @@ export function WireframeAuth({ onNext }: WireframeAuthProps) {
 
         {/* Action Button */}
         <Button 
-          onClick={onNext}
+          onClick={handleVerify}
           className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900"
         >
           Verify & Continue
