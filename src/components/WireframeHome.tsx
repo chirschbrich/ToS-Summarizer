@@ -5,7 +5,7 @@ import React from 'react';
 import { uploadPDF } from './services/uploadHandler'; // upload logic
 
 interface WireframeHomeProps {
-  onNext: () => void;
+  onNext: (summary: string) => void;
 }
 
 export function WireframeHome({ onNext }: WireframeHomeProps) {
@@ -28,7 +28,11 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
       const response = await uploadPDF(file);
       console.log('Upload response in handleSubmit:', response);
       alert(response.message || 'Upload ok');
-      
+
+      const summary = response.summary ?? 'No summary returned';
+      // navigate to summary screen with AI summary
+      onNext(summary);
+
       // clear after SUCCESS
       setFile(null);
       if (fileInputRef.current) {

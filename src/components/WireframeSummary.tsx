@@ -1,4 +1,5 @@
 import { AlertCircle, FileText, ArrowLeft, Download, Share2 } from 'lucide-react';
+import React from 'react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -6,7 +7,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 
-export function WireframeSummary() {
+interface WireframeSummaryProps {
+  summary: string;
+  onBack: () => void;
+}
+
+export function WireframeSummary({ summary, onBack }: WireframeSummaryProps) {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Browser Extension Summary Screen */}
@@ -69,12 +75,8 @@ export function WireframeSummary() {
                   </Badge>
                 </div>
                 <h3 className="text-gray-900 mb-3">Executive Summary</h3>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="h-3 bg-gray-200 rounded w-full"></div>
-                  <div className="h-3 bg-gray-200 rounded w-full"></div>
-                  <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-                  <div className="h-3 bg-gray-200 rounded w-full"></div>
-                  <div className="h-3 bg-gray-200 rounded w-4/6"></div>
+                <div className="space-y-2 text-sm text-gray-800 whitespace-pre-wrap">
+                  {summary}
                 </div>
               </Card>
 
