@@ -42,11 +42,8 @@ export function WireframeAuth({ onNext }: WireframeAuthProps) {
     <div className="max-w-md mx-auto">
       {/* Browser Extension Auth Screen */}
       <div className="border-2 border-gray-400 rounded-lg p-6 bg-gray-100">
-        {/* Header with Back Button */}
+        {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <button className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center hover:bg-gray-200">
-            <ArrowLeft className="w-4 h-4 text-gray-600" />
-          </button>
           <div className="text-gray-900">2FA Verification</div>
         </div>
 
@@ -112,35 +109,15 @@ export function WireframeAuth({ onNext }: WireframeAuthProps) {
         {/* Action Button */}
         <Button 
           onClick={handleVerify}
-          className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900"
+          className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900 cursor-pointer"
         >
           Verify & Continue
         </Button>
-
+        
         {/* Privacy Note */}
         <div className="mt-4 p-3 border-2 border-gray-300 rounded bg-white">
           <div className="text-xs text-gray-600">
             🔒 Your verification is temporary and session-based only
-          </div>
-        </div>
-      </div>
-
-      {/* Annotations */}
-      <div className="mt-8 space-y-3 text-sm text-gray-600">
-        <div className="flex items-start gap-2">
-          <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            3
-          </div>
-          <div>
-            <span className="text-gray-900">User Story:</span> Quickly verify access via 2FA without account creation
-          </div>
-        </div>
-        <div className="flex items-start gap-2">
-          <div className="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            4
-          </div>
-          <div>
-            <span className="text-gray-900">Feature:</span> Multiple verification methods for flexibility
           </div>
         </div>
       </div>
