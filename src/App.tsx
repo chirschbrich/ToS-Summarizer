@@ -44,8 +44,7 @@ export default function App() {
       <div className="max-w-7xl mx-auto">
         {/* header + nav */}
         <div className="mb-8">
-          <h1 className="text-gray-900 mb-2">ToS Summarizer - Wireframes</h1>
-          <p className="text-gray-600">Browser Extension Interface Mockups</p>
+          <h1 className="text-gray-900 mb-2">ToS Summarizer</h1>
         </div>
 
         {/* Wireframe Content */}
