@@ -4,13 +4,16 @@ import { Button } from './ui/button';
 import React from 'react';
 import { uploadPDF } from './services/uploadHandler'; // upload logic
 
+interface KeyPoint { title: string; detail: string }
+interface HighRiskClause { section: string; title: string; risk: string; excerpt: string }
 interface WireframeHomeProps {
-  onNext: (summary: string) => void;
+  onNext: (summary: string, keyPoints: KeyPoint[], fullText?: string, highRiskClauses?: HighRiskClause[]) => void;
 }
 
 export function WireframeHome({ onNext }: WireframeHomeProps) {
   const [file, setFile] = React.useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isSummarizing, setIsSummarizing] = React.useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selected = event.target.files?.[0] ?? null;
@@ -25,13 +28,16 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
     }
 
     try {
+      setIsSummarizing(true);
       const response = await uploadPDF(file);
       console.log('Upload response in handleSubmit:', response);
-      alert(response.message || 'Upload ok');
 
       const summary = response.summary ?? 'No summary returned';
+      const keyPoints = response.keyPoints ?? [];
+      const fullText = response.fullText ?? '';
+      const highRiskClauses = response.highRiskClauses ?? [];
       // navigate to summary screen with AI summary
-      onNext(summary);
+      onNext(summary, keyPoints, fullText, highRiskClauses);
 
       // clear after SUCCESS
       setFile(null);
@@ -41,6 +47,7 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
     } catch (error) {
       console.error('Error uploading file:', error);
       alert('Failed to upload the file.');
+      setIsSummarizing(false);
     }
   };
 
@@ -107,7 +114,7 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
             <div className="text-gray-900">{file.name}</div>
             <button
               onClick={handleCancelUpload}
-              className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center bg-white hover:border-gray-500 transition-colors"
+              className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center bg-white hover:border-gray-500 transition-colors cursor-pointer"
               >
               X
             </button>
@@ -118,9 +125,9 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
         <Button
           onClick={handleSubmit}
           className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={!file} // Disable if no file is selected
+          disabled={!file || isSummarizing} // Disable if no file or during summarize
         >
-          Submit
+          {isSummarizing ? 'Summarizing...' : 'Submit'}
         </Button>
         
         {/* Footer Info */}
