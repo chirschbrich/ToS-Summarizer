@@ -30,7 +30,7 @@ async function summarizeTermsOfService(text) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o',
       response_format: { type: 'json_object' },
       messages: [
         {
@@ -82,7 +82,10 @@ async function summarizeTermsOfService(text) {
             "   - title: a short label like 'Data Sharing with Partners'.",
             "   - detail: 1-2 sentences explaining the point.",
             "",
-            "3) Identify 4-8 highRiskClauses from the document that deal with user data and tracking. Extract the actual text excerpts.",
+            "3) Identify 4-8 highRiskClauses from the document that deal with user data and tracking.",
+            "   IMPORTANT: For the 'excerpt' field, copy the EXACT text word-for-word from the document below.",
+            "   The excerpt must match the source text EXACTLY (same punctuation, spacing, capitalization).",
+            "   This is critical - the excerpts will be used to highlight text in the full document.",
             "",
             "Return ONLY valid JSON with keys: summary, keyPoints, highRiskClauses.",
             "",

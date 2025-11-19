@@ -17,63 +17,6 @@ interface WireframeSummaryProps {
 export function WireframeSummary({ summary, keyPoints, fullText = '', highRiskClauses = [], onBack }: WireframeSummaryProps) {
   const [showFullDocument, setShowFullDocument] = React.useState(false);
 
-  // Helper function to render document with highlighted clauses
-  const renderDocumentWithHighlights = (text: string, clauses: { excerpt: string; risk: string; }[]) => {
-    if (!text || clauses.length === 0) {
-      return text;
-    }
-
-    // Split text into parts and highlight matching excerpts
-    const parts: any[] = [];
-    let lastIndex = 0;
-    
-    // Create a list of all excerpts with their positions
-    const excerptPositions: { start: number; end: number; risk: string; }[] = [];
-    
-    clauses.forEach(clause => {
-      if (clause.excerpt) {
-        const index = text.indexOf(clause.excerpt);
-        if (index !== -1) {
-          excerptPositions.push({
-            start: index,
-            end: index + clause.excerpt.length,
-            risk: clause.risk
-          });
-        }
-      }
-    });
-
-    // Sort by start position
-    excerptPositions.sort((a, b) => a.start - b.start);
-
-    // Build the highlighted text
-    excerptPositions.forEach((pos, i) => {
-      // Add text before the highlight
-      if (pos.start > lastIndex) {
-        parts.push(text.substring(lastIndex, pos.start));
-      }
-
-      // Add the highlighted text
-      const bgColor = pos.risk === 'High' ? 'bg-yellow-300' : 
-                      pos.risk === 'Medium' ? 'bg-yellow-200' : 
-                      'bg-yellow-100';
-      parts.push(
-        <span key={`highlight-${i}`} className={`${bgColor} px-1 rounded`}>
-          {text.substring(pos.start, pos.end)}
-        </span>
-      );
-
-      lastIndex = pos.end;
-    });
-
-    // Add remaining text
-    if (lastIndex < text.length) {
-      parts.push(text.substring(lastIndex));
-    }
-
-    return parts.length > 0 ? parts : text;
-  };
-
   return (
     <div className="max-w-4xl mx-auto">
       {/* Browser Extension Summary Screen */}
@@ -198,7 +141,7 @@ export function WireframeSummary({ summary, keyPoints, fullText = '', highRiskCl
                     onClick={() => setShowFullDocument(true)}
                     className="w-full border-2 border-gray-400 bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
                   >
-                    View Full Document with Highlights
+                    View Full Document
                   </Button>
                 </>
               ) : (
@@ -214,13 +157,10 @@ export function WireframeSummary({ summary, keyPoints, fullText = '', highRiskCl
                         Back to Clauses
                       </Button>
                     </div>
-                    <div className="text-sm text-gray-600 mb-4">
-                      High-risk clauses are highlighted in yellow
-                    </div>
                     
                     <div className="max-h-[600px] overflow-y-auto p-4 bg-gray-50 rounded border-2 border-gray-200">
                       <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
-                        {renderDocumentWithHighlights(fullText, highRiskClauses)}
+                        {fullText}
                       </div>
                     </div>
                   </Card>
