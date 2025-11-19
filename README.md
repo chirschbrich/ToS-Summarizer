@@ -2,7 +2,7 @@
 
 An AI-powered Terms of Service analyzer that provides intelligent summaries, identifies high-risk clauses, and highlights privacy concerns in legal documents.
 
-## 🚀 Features
+## Features
 
 - **AI-Powered Analysis**: Uses GPT-4o to analyze and summarize Terms of Service documents
 - **Smart PDF Processing**: Extracts and processes text from PDF files
@@ -12,14 +12,14 @@ An AI-powered Terms of Service analyzer that provides intelligent summaries, ide
 - **Document Management**: Automatic cleanup of processed documents
 - **User Authentication**: Secure 2 factor authentication flow before document analysis
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
 - **Node.js** (v16 or higher)
 - **npm** (v7 or higher)
 
-## 🔧 Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
