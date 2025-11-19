@@ -97,10 +97,10 @@ export function WireframeAuth({ onNext }: WireframeAuthProps) {
 
           {/* Alternative Methods */}
           <div className="space-y-2">
-            <button className="w-full p-3 border-2 border-gray-300 rounded bg-white text-gray-700 hover:bg-gray-50 text-sm">
+            <button className="w-full p-3 border-2 border-gray-300 rounded bg-white text-gray-700 hover:bg-gray-50 text-sm cursor-pointer">
               📱 Send code via SMS
             </button>
-            <button className="w-full p-3 border-2 border-gray-300 rounded bg-white text-gray-700 hover:bg-gray-50 text-sm">
+            <button className="w-full p-3 border-2 border-gray-300 rounded bg-white text-gray-700 hover:bg-gray-50 text-sm cursor-pointer">
               📧 Send code via Email
             </button>
           </div>
@@ -113,7 +113,7 @@ export function WireframeAuth({ onNext }: WireframeAuthProps) {
         >
           Verify & Continue
         </Button>
-        
+
         {/* Privacy Note */}
         <div className="mt-4 p-3 border-2 border-gray-300 rounded bg-white">
           <div className="text-xs text-gray-600">
