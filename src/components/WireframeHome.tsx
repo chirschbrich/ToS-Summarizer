@@ -1,38 +1,60 @@
 import { Upload, FileText } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
-import { useState } from 'react';
-import { uploadPDF } from './services/uploadHandler.ts'; // Import the upload logic
+import React from 'react';
+import { uploadPDF } from './services/uploadHandler'; // upload logic
 
+interface KeyPoint { title: string; detail: string }
+interface HighRiskClause { section: string; title: string; risk: string; excerpt: string }
 interface WireframeHomeProps {
-  onNext: () => void;
+  onNext: (summary: string, keyPoints: KeyPoint[], fullText?: string, highRiskClauses?: HighRiskClause[]) => void;
 }
 
 export function WireframeHome({ onNext }: WireframeHomeProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = React.useState<File | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isSummarizing, setIsSummarizing] = React.useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = event.target.files?.[0];
-    if (uploadedFile && uploadedFile.type === 'application/pdf') {
-      setFile(uploadedFile);
-      console.log('PDF selected:', uploadedFile.name);
-    } else {
-      alert('Please select a valid PDF file.');
-    }
+    const selected = event.target.files?.[0] ?? null;
+    console.log('handleFileChange selected:', selected);
+    setFile(selected);
   };
 
   const handleSubmit = async () => {
-    if (file) {
-      try {
-        await uploadPDF(file); // Call the upload logic
-        alert('File uploaded successfully!');
-        onNext();
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        alert('Failed to upload the file. Please try again.');
-      }
-    } else {
+    if (!file) {
       alert('Please select a PDF file before submitting.');
+      return;
+    }
+
+    try {
+      setIsSummarizing(true);
+      const response = await uploadPDF(file);
+      console.log('Upload response in handleSubmit:', response);
+
+      const summary = response.summary ?? 'No summary returned';
+      const keyPoints = response.keyPoints ?? [];
+      const fullText = response.fullText ?? '';
+      const highRiskClauses = response.highRiskClauses ?? [];
+      // navigate to summary screen with AI summary
+      onNext(summary, keyPoints, fullText, highRiskClauses);
+
+      // clear after SUCCESS
+      setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Failed to upload the file.');
+      setIsSummarizing(false);
+    }
+  };
+
+  const handleCancelUpload = () => {
+    setFile(null); // Clear the selected file
+    if(fileInputRef.current) {
+      fileInputRef.current.value = ''; //reset the file input
     }
   };
 
@@ -76,6 +98,7 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
           {/* Hidden input inside label */}
           <input
             id="pdf-upload"
+            ref={fileInputRef}
             type="file"
             accept="application/pdf"
             onChange={handleFileChange}
@@ -85,14 +108,28 @@ export function WireframeHome({ onNext }: WireframeHomeProps) {
         </label>
       </div>
 
+      {/* File Card */}
+      {file && (
+          <div className="mb-6 p-3 border-2 border-gray-300 rounded bg-white flex items-center justify-between">
+            <div className="text-gray-900">{file.name}</div>
+            <button
+              onClick={handleCancelUpload}
+              className="w-8 h-8 border-2 border-gray-400 rounded flex items-center justify-center bg-white hover:border-gray-500 transition-colors cursor-pointer"
+              >
+              X
+            </button>
+          </div>
+        )}
+      
       {/* Action Button */}
         <Button
           onClick={handleSubmit}
-          className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900"
+          className="w-full bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={!file || isSummarizing} // Disable if no file or during summarize
         >
-          Submit
+          {isSummarizing ? 'Summarizing...' : 'Submit'}
         </Button>
-
+        
         {/* Footer Info */}
         <div className="mt-4 p-3 border-2 border-gray-300 rounded bg-white">
           <div className="text-xs text-gray-600">
