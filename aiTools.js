@@ -28,7 +28,7 @@ async function summarizeTermsOfService(text) {
     };
   }
 
-  try {
+  try { //prompting OpenAI
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       response_format: { type: 'json_object' },
@@ -111,7 +111,7 @@ async function summarizeTermsOfService(text) {
       };
     }
 
-    // Basic guard: enforce expected shape
+    // enforce expected shape
     const summary = typeof parsed.summary === 'string' ? parsed.summary : 'No summary returned.';
     const keyPoints = Array.isArray(parsed.keyPoints) ? parsed.keyPoints.slice(0, 4) : [];
     const highRiskClauses = Array.isArray(parsed.highRiskClauses) ? parsed.highRiskClauses : [];

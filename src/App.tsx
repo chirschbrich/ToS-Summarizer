@@ -63,8 +63,6 @@ export default function App() {
           {currentScreen === 'auth' && (
             <WireframeAuth
               onNext={() => {
-                // in this flow, you could move to summary mock WITHOUT AI,
-                // or you can just go back to home, depending on your design
                 setCurrentScreen('home');
               }}
             />
