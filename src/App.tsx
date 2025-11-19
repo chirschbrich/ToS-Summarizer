@@ -8,7 +8,7 @@ import { cleanupDocuments } from './components/services/uploadHandler';
 type Screen = 'home' | 'auth';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = React.useState<Screen>('home');
+  const [currentScreen, setCurrentScreen] = React.useState<Screen>('auth');
   const [summary, setSummary] = React.useState<string | null>(null);
   const [keyPoints, setKeyPoints] = React.useState<
     { title: string; detail: string }[]>([]);
